@@ -1,0 +1,105 @@
+:root {
+  --bg: #000000;
+  --text: #e7dac7;
+  --muted: #bca98b;
+  --accent: #e3b873;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'EB Garamond', serif;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.title {
+  font-size: 56px;
+  margin: 12px 0 8px;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  margin: 8px 0 24px;
+  font-size: 20px;
+  color: var(--muted);
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #2b2722;
+  margin: 20px 0 28px;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(227, 184, 115, 0.35);
+}
+
+a:hover {
+  color: #ffd391;
+  border-bottom-color: rgba(255, 211, 145, 0.6);
+}
+
+.about p {
+  margin: 10px 0;
+  font-size: 20px;
+}
+
+.projects h2 {
+  font-size: 44px;
+  margin: 46px 0 10px;
+}
+
+.post {
+  margin: 26px 0 26px;
+}
+
+.post-title {
+  display: inline-block;
+  font-size: 28px;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 2px solid rgba(227, 184, 115, 0.45);
+}
+
+.post-dek {
+  margin: 6px 0 0;
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 20px;
+}
+
+.post-date {
+  color: var(--muted);
+  font-style: normal;
+}
+
+@media (max-width: 560px) {
+  .title {
+    font-size: 42px;
+  }
+
+  .writing h2 {
+    font-size: 34px;
+  }
+
+  .post-title {
+    font-size: 24px;
+  }
+}
+
+
