@@ -88,6 +88,69 @@ a:hover {
   font-style: normal;
 }
 
+/* ── Thesis / blog-post page ─────────────────────────────── */
+
+.back-link {
+  display: inline-block;
+  font-size: 16px;
+  color: var(--muted);
+  border-bottom: 1px solid rgba(107, 107, 107, 0.35);
+  margin-bottom: 40px;
+}
+
+.back-link:hover {
+  color: var(--text);
+  border-bottom-color: rgba(26, 26, 26, 0.5);
+}
+
+.post-body {
+  max-width: 720px;
+}
+
+.post-body h1 {
+  font-size: 48px;
+  line-height: 1.15;
+  margin: 0 0 14px;
+  letter-spacing: 0.3px;
+}
+
+.post-body .byline {
+  font-size: 17px;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0 0 28px;
+}
+
+.post-body h2 {
+  font-size: 30px;
+  margin: 48px 0 12px;
+}
+
+.post-body p {
+  font-size: 20px;
+  margin: 0 0 20px;
+  line-height: 1.7;
+}
+
+figure {
+  margin: 36px 0;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #e8e8e8;
+}
+
+figcaption {
+  font-size: 16px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 10px;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 560px) {
   .title {
     font-size: 42px;
@@ -98,6 +161,14 @@ a:hover {
   }
 
   .post-title {
+    font-size: 24px;
+  }
+
+  .post-body h1 {
+    font-size: 34px;
+  }
+
+  .post-body h2 {
     font-size: 24px;
   }
 }
