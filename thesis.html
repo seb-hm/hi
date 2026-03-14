@@ -6,122 +6,411 @@
   <title>From Policy to Projects — Sebastian Hanss-Mirodone</title>
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0;z-index:100;transition:width .15s}
+    .reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    .hero{min-height:70vh;display:flex;flex-direction:column;justify-content:center;padding:60px 0 40px}
+    .hero h1{font-size:52px;line-height:1.12;margin:0 0 18px}
+    .hero .lead{font-size:22px;color:var(--muted);font-style:italic;margin:0 0 36px;max-width:620px}
+    .big-number{font-size:72px;font-weight:600;color:var(--accent);line-height:1;margin:0 0 6px}
+    .big-label{font-size:18px;color:var(--muted);margin:0 0 36px}
+    .byline-text{font-size:16px;color:var(--muted);margin:0}
+    .scroll-hint{margin-top:48px;font-size:14px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+    .finding{margin:80px 0}
+    .finding h2{font-size:34px;margin:0 0 12px}
+    .finding>p{font-size:20px;line-height:1.7;margin:0 0 20px}
+    .stat-row{display:flex;gap:48px;margin:32px 0 40px;flex-wrap:wrap}
+    .stat{text-align:left}
+    .stat .num{font-size:56px;font-weight:600;color:var(--accent);line-height:1}
+    .stat .lbl{font-size:16px;color:var(--muted);margin-top:4px}
+    .dot-matrix{margin:28px 0 40px}
+    .dm-row{display:flex;align-items:center;margin:6px 0;gap:8px}
+    .dm-label{min-width:300px;font-size:15px;text-align:right;color:var(--text);flex-shrink:0}
+    .dm-dots{display:flex;flex-wrap:wrap;gap:4px}
+    .dm-dot{width:12px;height:12px;border-radius:50%;opacity:0;transform:scale(0);transition:opacity .4s ease,transform .4s ease}
+    .dm-dot.show{opacity:1;transform:scale(1)}
+    .dm-dot.rank1{background:#3a3a3a}
+    .dm-dot.rank2{background:#8a8a8a}
+    .dm-dot.rank3{background:#c8c8c8}
+    .dm-legend{display:flex;gap:18px;margin:12px 0 0 308px;font-size:13px;color:var(--muted)}
+    .dm-legend span{display:flex;align-items:center;gap:5px}
+    .dm-legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+    .bar-chart{margin:28px 0 40px;position:relative}
+    .bc-row{display:flex;align-items:center;margin:8px 0;gap:8px;padding-right:50px}
+    .bc-label{min-width:220px;font-size:14px;text-align:right;color:var(--text);flex-shrink:0}
+    .bc-track{flex:1;height:28px;position:relative;background:#f5f5f5;border-radius:3px;overflow:visible}
+    .bc-bar{height:100%;border-radius:3px;width:0;transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+    .bc-val{position:absolute;right:-48px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);opacity:0;transition:opacity .5s .8s;white-space:nowrap}
+    .bc-bar.show~.bc-val{opacity:1}
+    .bc-ci{position:absolute;top:50%;height:2px;background:rgba(0,0,0,.25);transform:translateY(-50%)}
+    .bc-ci::before,.bc-ci::after{content:"";position:absolute;top:-4px;width:2px;height:10px;background:rgba(0,0,0,.25)}
+    .bc-ci::before{left:0}
+    .bc-ci::after{right:0}
+    .bc-ets{position:absolute;top:-8px;bottom:-8px;width:2px;background:var(--accent);z-index:2}
+    .bc-ets-label{position:absolute;top:-22px;font-size:12px;color:var(--accent);white-space:nowrap;transform:translateX(-50%)}
+    .bc-note{font-size:13px;color:var(--muted);margin:4px 0 0 228px;font-style:italic}
+    .scatter-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:28px 0 40px}
+    .scatter-panel{position:relative}
+    .scatter-panel h4{font-size:15px;margin:0 0 8px;color:var(--text)}
+    .scatter-panel svg{width:100%;height:auto}
+    .scatter-panel .dot{opacity:0;transition:opacity .5s ease}
+    .scatter-panel.show .dot{opacity:1}
+    details{margin:20px 0;border:1px solid #e8e8e8;border-radius:6px;padding:12px 16px}
+    details summary{cursor:pointer;font-size:17px;color:var(--accent);font-weight:600;list-style:none}
+    details summary::-webkit-details-marker{display:none}
+    details summary::before{content:"+ ";font-weight:400}
+    details[open] summary::before{content:"- "}
+    .closing-quote{border-left:3px solid var(--accent);padding:12px 24px;margin:40px 0;font-size:22px;font-style:italic;color:var(--muted);line-height:1.5}
+    @media(max-width:700px){
+      .dm-label{min-width:160px;font-size:13px}
+      .dm-legend{margin-left:168px}
+      .bc-label{min-width:140px;font-size:12px}
+      .bc-note{margin-left:148px}
+      .scatter-grid{grid-template-columns:1fr}
+      .hero h1{font-size:36px}
+      .big-number{font-size:52px}
+      .stat .num{font-size:40px}
+      .stat-row{gap:24px}
+    }
+  </style>
 </head>
 <body>
+  <div class="progress-bar" id="progressBar"></div>
   <main class="container">
-    <a class="back-link" href="index.html">← Sebastian Hanss-Mirodone</a>
+    <a class="back-link" href="index.html">&larr; Sebastian Hanss-Mirodone</a>
 
-    <article class="post-body">
-      <h1>From Policy to Projects: Expert Perspectives on Barriers and Costs of European CCS Deployment</h1>
-      <p class="byline">Sebastian Hanss-Mirodone &mdash; Master's Thesis, March 2026 &mdash; TUM Campus Straubing, Technical University of Munich</p>
-      <hr class="divider" />
+    <section class="hero">
+      <h1>From Policy to Projects</h1>
+      <p class="lead">Expert perspectives on the barriers and costs of European CCS deployment</p>
+      <div class="big-number" data-target="2" data-suffix=" Mt CO&#x2082;/yr">0</div>
+      <p class="big-label">Europe&#x2019;s current annual CCS capacity &mdash; less than 1% of what 2050 pathways require</p>
+      <p class="byline-text">Sebastian Hanss-Mirodone &mdash; Master&#x2019;s Thesis, March 2026<br>TUM Campus Straubing, Technical University of Munich</p>
+      <p class="scroll-hint">&darr; Scroll to explore the findings</p>
+    </section>
 
-      <!-- ABSTRACT ────────────────────────────────────────── -->
-      <p>
-        Carbon capture and storage (CCS) is central to European decarbonization pathways, yet operational capacity remains negligible: Europe's annual CCS capacity is roughly 2&thinsp;Mt&thinsp;CO&#x2082;, less than one hundredth of the volumes its own 2050 pathways require. This thesis examines the barriers to and costs of CCS deployment in Europe through semi-structured interviews with 56 stakeholders across the CCS value chain and structured expert elicitation with two panels of eight experts each &mdash; one for bioenergy with carbon capture and storage (BECCS) and one for cement CCS.
-      </p>
-      <p>
-        Lack of long-term policy certainty emerged as the dominant barrier. This finding stands in tension with substantial EU and national CCS policy frameworks; the barrier is not the absence of policy but the absence of durable commitment across CCS investment horizons of 15&ndash;20 years. High upfront capital requirements and missing transport and storage infrastructure ranked next, forming a mutually reinforcing cycle: without infrastructure, costs stay high; without viable business cases, infrastructure investment stalls.
-      </p>
-      <p>
-        Performance-weighted cost projections reveal a sectoral divide. Cement CCS full-chain costs of &euro;111&ndash;190/tCO&#x2082; achieve market viability at expected EU ETS prices in seven of eight configurations. BECCS costs of &euro;165&ndash;264/tCO&#x2082; exceed expected prices by &euro;17&ndash;116 in all configurations, even with 50&thinsp;% CAPEX state aid. These findings imply differentiated policy architectures: reinforcement of existing carbon pricing for cement, and creation of dedicated carbon removal procurement mechanisms for BECCS.
-      </p>
+    <section class="finding reveal">
+      <h2>The dominant barrier is a lack of durable policy commitment</h2>
+      <p>Across 56 interviews, lack of long-term policy certainty scored nearly double the second-ranked barrier. CCS projects need 15&ndash;20-year lifespans to recover costs, yet policy certainty rarely extends beyond a single legislative period.</p>
+      <div class="dot-matrix" id="dm-barriers"></div>
+      <p>High upfront CAPEX and missing CO&#x2082; transport &amp; storage infrastructure rank second and third &mdash; forming a mutually reinforcing cycle: without infrastructure, costs stay high; without viable business cases, infrastructure investment stalls.</p>
+    </section>
 
-      <!-- FINDING 1 ────────────────────────────────────────── -->
-      <h2>Finding 1: The dominant barrier is a lack of durable policy commitment</h2>
-      <p>
-        Across all 56 interviews, <em>lack of long-term policy certainty and support schemes</em> scored nearly double the second-ranked barrier. The core problem is a structural mismatch: CCS projects require 15&ndash;20-year operational lifespans to recover capital costs, yet policy certainty rarely extends beyond a legislative period of four to five years. Experts described a first-mover dilemma in which early investors risk being undercut if regulations change, and a wait-and-see posture is individually rational even when collectively harmful.
-      </p>
-      <p>
-        This concern is not hypothetical. Germany&rsquo;s CCfD program was cut from &euro;27 billion to &euro;6 billion, Sweden&rsquo;s reverse auction budget was reduced, and the UK&rsquo;s Track-1 model consumed allocations intended for four CCS clusters on just two projects. Each reduction validates the hesitation. The finding emerges against an extensive backdrop of EU and national policy &mdash; the EU ETS revision, the Net-Zero Industry Act, the Industrial Carbon Management Strategy &mdash; underscoring that the barrier is not the absence of policy but its fragility.
-      </p>
-      <p>
-        High upfront CAPEX and missing CO&#x2082; transport and storage infrastructure ranked second and third. These barriers are mutually reinforcing: capture facilities can be built in two to three years, while storage sites require at least three to five, creating a coordination failure in which no actor is willing to move first. This circularity helps explain why, despite mounting policy support, European operational CCS capacity stands at only 2.3&thinsp;Mtpa &mdash; roughly 0.6&thinsp;% of projected 2050 requirements.
-      </p>
+    <section class="finding reveal">
+      <h2>Cement is the most promising near-term application</h2>
+      <p>Roughly 60% of clinker emissions are inherent to the calcination reaction &mdash; no fuel switch can eliminate them. Combined with high flue-gas CO&#x2082; concentrations and limited import competition, cement is the deployment priority.</p>
+      <div class="dot-matrix" id="dm-applications"></div>
+      <p>Waste-to-energy attracted broad support because approximately half of its emissions are biogenic, enabling both fossil decarbonization and carbon removal from a single facility.</p>
+    </section>
 
-      <figure>
-        <img src="images/figure-barriers.png" alt="Dot matrix chart of expert rankings of key barriers to CCS deployment in Europe" />
-        <figcaption>Expert rankings of key barriers to CCS deployment in Europe (N&thinsp;=&thinsp;49). Each dot represents one expert vote. Dark grey = ranked 1st (3 pts); medium grey = ranked 2nd (2 pts); light grey = ranked 3rd (1 pt).</figcaption>
-      </figure>
+    <section class="finding reveal">
+      <h2>Cement CCS is commercially viable; BECCS is not yet</h2>
+      <p>Using Cooke&#x2019;s Classical Model with two panels of eight experts each, full-chain costs were projected across eight deployment scenarios.</p>
+      <div class="stat-row">
+        <div class="stat">
+          <div class="num" data-target="7" data-suffix=" of 8">0</div>
+          <div class="lbl">Cement configurations viable at expected ETS price</div>
+        </div>
+        <div class="stat">
+          <div class="num" data-target="0" data-suffix=" of 8">0</div>
+          <div class="lbl">BECCS configurations viable at expected ETS price</div>
+        </div>
+      </div>
+      <h3 style="font-size:22px;margin:40px 0 8px">Cement CCS full-chain costs</h3>
+      <div class="bar-chart" id="bc-cement"></div>
+      <h3 style="font-size:22px;margin:40px 0 8px">BECCS full-chain costs</h3>
+      <div class="bar-chart" id="bc-beccs"></div>
+      <details>
+        <summary>Cement expert-level estimates</summary>
+        <div class="scatter-grid" id="sc-cement"></div>
+      </details>
+      <details>
+        <summary>BECCS expert-level estimates</summary>
+        <div class="scatter-grid" id="sc-beccs"></div>
+      </details>
+      <p>The structural gap for BECCS is not a cost problem but a market creation problem: biogenic CO&#x2082; capture is not currently recognized under the EU ETS, leaving no compliance revenue stream.</p>
+    </section>
 
-      <!-- FINDING 2 ────────────────────────────────────────── -->
-      <h2>Finding 2: Cement is the most promising near-term application</h2>
-      <p>
-        Experts ranked cement as the most promising CCS application in Europe, followed by waste-to-energy and BECCS. For cement, there is no credible alternative decarbonization route: roughly 60&thinsp;% of clinker production emissions are inherent to the calcination reaction and cannot be eliminated through fuel switching alone. This technological necessity, combined with comparatively high flue-gas CO&#x2082; concentrations, continuous year-round operation, and regional market structures that limit import competition, makes cement the near-term deployment priority.
-      </p>
-      <p>
-        Waste-to-energy attracted broad support as a complementary application, in part because approximately half of its emissions are biogenic, enabling both fossil decarbonization and carbon removal from a single facility. BECCS ranked third overall &mdash; elevated by BECCS industry experts but moderated by concerns about biomass availability and the absence of a functioning revenue stream for negative emissions under the current EU ETS.
-      </p>
+    <section class="finding reveal">
+      <h2>Cost reductions come from infrastructure, not capture technology</h2>
+      <div class="stat-row">
+        <div class="stat">
+          <div class="num" data-target="32" data-suffix="%">0</div>
+          <div class="lbl">Maximum cost reduction FOAK &rarr; NOAK (cement)</div>
+        </div>
+        <div class="stat">
+          <div class="num" data-target="50" data-prefix="~&#x20ac;" data-suffix="">0</div>
+          <div class="lbl">Savings per tCO&#x2082; from switching ship to pipeline</div>
+        </div>
+      </div>
+      <p>Both panels show 15&ndash;32% learning curves from FOAK to NOAK, but experts consistently attributed these reductions to transport and storage infrastructure maturation rather than capture technology improvements.</p>
+      <p>The inland cost penalty shrinks from &#x20ac;44&ndash;46/tCO&#x2082; at FOAK to &#x20ac;5&ndash;13/tCO&#x2082; at NOAK, as pipeline networks eliminate rail-based CO&#x2082; transport. Shared infrastructure development is the single most effective cross-sectoral cost lever.</p>
+    </section>
 
-      <figure>
-        <img src="images/figure-applications.png" alt="Dot matrix chart of expert rankings of most promising CCS applications in Europe" />
-        <figcaption>Expert rankings of most promising CCS applications in Europe (N&thinsp;=&thinsp;39). Each dot represents one expert vote. Dark grey = ranked 1st (3 pts); medium grey = ranked 2nd (2 pts); light grey = ranked 3rd (1 pt).</figcaption>
-      </figure>
+    <section class="finding reveal">
+      <h2>The EU ETS and CCfDs are the most important policy mechanisms</h2>
+      <p>The ordering inverted by sector: cement experts ranked CCfDs first, reflecting the need for revenue certainty over long capital cycles, while BECCS experts ranked the ETS first but elevated reverse auctions alongside CCfDs.</p>
+      <div class="dot-matrix" id="dm-policy"></div>
+      <p>The forthcoming 2026 EU ETS revision &mdash; particularly whether negative emissions will be integrated into carbon markets &mdash; was identified as the single most consequential near-term policy decision for BECCS.</p>
+    </section>
 
-      <!-- FINDING 3 ────────────────────────────────────────── -->
-      <h2>Finding 3: Cement CCS is commercially viable; BECCS is not yet</h2>
-      <p>
-        The quantitative cost analysis used Cooke&rsquo;s Classical Model &mdash; a performance-weighted expert elicitation method &mdash; with two panels of eight experts each. The target variable is full-chain cost (FCC): the static carbon price an operator would need over a 15-year amortization period to break even on capture, transport, and storage combined, expressed as a CCfD strike price in &euro;/tCO&#x2082;.
-      </p>
-      <p>
-        Cement CCS full-chain costs range from &euro;111/tCO&#x2082; (mature, coastal, with 50&thinsp;% CAPEX state aid) to &euro;190/tCO&#x2082; (early-stage, inland, no subsidy). Cement experts projected a 15-year average EU ETS price of &euro;171/EUA. At this price level, seven of eight cement configurations achieve a negative cost gap &mdash; meaning they are commercially viable without dedicated CCS-specific support beyond carbon pricing and infrastructure investment.
-      </p>
-      <p>
-        BECCS full-chain costs range from &euro;165/tCO&#x2082; (mature, coastal, subsidized) to &euro;264/tCO&#x2082; (early-stage, inland, no subsidy). BECCS experts projected a lower 15-year EU ETS price of &euro;148/EUA, reflecting greater uncertainty about CDR market integration. No BECCS configuration achieves market viability. Even the most favorable scenario &mdash; mature, coastal, with 50&thinsp;% CAPEX state aid &mdash; exceeds expected carbon prices by &euro;17/tCO&#x2082; (11&thinsp;%). The structural gap is not a cost problem but a market creation problem: biogenic CO&#x2082; capture is not currently recognized under the EU ETS, leaving no compliance revenue stream.
-      </p>
-
-      <figure>
-        <img src="images/figure-beccs-costs.png" alt="Bar chart of BECCS DM results from structured expert elicitation across eight deployment scenarios" />
-        <figcaption>BECCS decision-maker results from structured expert elicitation (N&thinsp;=&thinsp;8). Bars show weighted median FCC estimates; error bars indicate 90&thinsp;% credible intervals. Q1 = expected 15-year EU ETS price; Q2&ndash;Q9 = full-chain costs across FOAK/NOAK &times; coastal/inland &times; with/without 50&thinsp;% CAPEX state aid.</figcaption>
-      </figure>
-
-      <figure>
-        <img src="images/figure-beccs-overview.png" alt="Quadrant overview of BECCS expert elicitation results across all deployment scenarios" />
-        <figcaption>BECCS expert elicitation results across deployment scenarios. Each panel shows individual expert estimates (light green) and the weighted decision-maker aggregate (dark green). Circles = baseline FCC; triangles = costs with 50&thinsp;% CAPEX state aid. All values in &euro;/tCO&#x2082;.</figcaption>
-      </figure>
-
-      <figure>
-        <img src="images/figure-cement-costs.png" alt="Bar chart of cement CCS DM results from structured expert elicitation across eight deployment scenarios" />
-        <figcaption>Cement CCS decision-maker results from structured expert elicitation (N&thinsp;=&thinsp;8). Same structure as BECCS panel above. Cement achieves negative cost gaps (market viability) in seven of eight configurations at the expected EU ETS price.</figcaption>
-      </figure>
-
-      <figure>
-        <img src="images/figure-cement-overview.png" alt="Quadrant overview of cement CCS expert elicitation results across all deployment scenarios" />
-        <figcaption>Cement CCS expert elicitation results across deployment scenarios. Each panel shows individual expert estimates (light green) and the weighted decision-maker aggregate (dark green). Circles = baseline FCC; triangles = costs with 50&thinsp;% CAPEX state aid. All values in &euro;/tCO&#x2082;.</figcaption>
-      </figure>
-
-      <!-- FINDING 4 ────────────────────────────────────────── -->
-      <h2>Finding 4: Cost reductions come from infrastructure, not capture technology</h2>
-      <p>
-        Both panels show substantial learning curves from first-of-a-kind (FOAK) to mature nth-of-a-kind (NOAK) deployment: 15&ndash;25&thinsp;% for BECCS and 26&ndash;32&thinsp;% for cement. But experts across both industries consistently attributed these reductions to transport and storage infrastructure maturation rather than capture technology improvements. As one cement project developer put it: &ldquo;The nth-of-a-kind does not reduce the capture costs. This technology is mature enough.&rdquo; Transitioning from ship to pipeline transport, for example, eliminates the need to liquefy CO&#x2082;, enabling savings of around &euro;50/tCO&#x2082; through compression and direct dispatch alone.
-      </p>
-      <p>
-        Inland locations benefit disproportionately from infrastructure maturation. The inland cost penalty shrinks from &euro;44&ndash;46/tCO&#x2082; at FOAK deployment to &euro;5&ndash;13/tCO&#x2082; at NOAK, as pipeline networks eliminate the need for rail-based CO&#x2082; transport. This pattern implies that shared infrastructure development &mdash; through RAB models, direct public co-investment, or cluster approaches &mdash; is the single most effective cross-sectoral lever for reducing full-chain costs.
-      </p>
-
-      <!-- FINDING 5 ────────────────────────────────────────── -->
-      <h2>Finding 5: The EU ETS and CCfDs are the most important policy mechanisms</h2>
-      <p>
-        Experts ranked the EU Emissions Trading System first and carbon contracts for difference (CCfDs) second as the most important policy mechanisms for European CCS deployment. Their ordering inverted by sector: cement experts ranked CCfDs first, reflecting the need for revenue certainty over long capital cycles, while BECCS experts ranked the ETS first but elevated reverse auctions alongside CCfDs, consistent with their dependence on procurement schemes in Denmark and Sweden.
-      </p>
-      <p>
-        The forthcoming 2026 EU ETS revision &mdash; particularly the question of whether negative emissions will be integrated into carbon markets &mdash; was identified as the single most consequential near-term policy decision for BECCS. Without compliance market access, BECCS projects remain structurally dependent on voluntary carbon market buyers, a market currently concentrated around a single corporate purchaser and insufficient to underwrite capital-intensive investments.
-      </p>
-
-      <figure>
-        <img src="images/figure-policy.png" alt="Dot matrix chart of expert rankings of most important policy mechanisms for CCS in Europe" />
-        <figcaption>Expert rankings of most important policy mechanisms for CCS in Europe (N&thinsp;=&thinsp;36). Each dot represents one expert vote. Dark grey = ranked 1st (3 pts); medium grey = ranked 2nd (2 pts); light grey = ranked 3rd (1 pt).</figcaption>
-      </figure>
-
-      <!-- CONCLUSION ──────────────────────────────────────── -->
-      <h2>Takeaway</h2>
-      <p>
-        Europe has built an extensive CCS policy architecture. The instruments required to unlock deployment &mdash; CCfDs, reverse auctions, RAB models for infrastructure, the EU ETS &mdash; exist and are operational in pioneering countries. What is missing is not the toolbox but the commitment to use it at a scale and duration commensurate with the investment decisions these instruments are designed to enable.
-      </p>
-      <p>
-        Cement CCS is ready for near-term deployment under existing carbon pricing frameworks, provided infrastructure is built and free allowances are phased out on schedule. BECCS requires a fundamentally different architecture: dedicated CDR procurement mechanisms, integration of negative emissions into compliance carbon markets, and long-term contracts that provide the revenue certainty no voluntary market can currently offer. Both pathways are actionable. The barrier is political will, not technology.
-      </p>
-    </article>
+    <section class="finding reveal">
+      <p class="closing-quote">Europe has built an extensive CCS policy architecture. The instruments required to unlock deployment exist and are operational. What is missing is not the toolbox but the commitment to use it at a scale and duration commensurate with the investment decisions these instruments are designed to enable.</p>
+      <p>Cement CCS is ready for near-term deployment under existing carbon pricing. BECCS requires dedicated CDR procurement mechanisms. Both pathways are actionable. The barrier is political will, not technology.</p>
+      <p style="margin-top:32px"><a href="Master's_Thesis_S.Hanss-Mirodone.pdf" target="_blank">Read the full thesis (PDF)</a></p>
+    </section>
   </main>
+
+<script>
+var barriers = [
+  {n:'Lack of long-term policy certainty & support schemes',f:10,s:16,t:17,sc:79},
+  {n:'High upfront CAPEX and financing challenges',f:4,s:9,t:14,sc:44},
+  {n:'Missing CO\u2082 transport & storage infrastructure',f:6,s:10,t:5,sc:43},
+  {n:'Insufficient or volatile carbon pricing signal',f:11,s:3,t:2,sc:41},
+  {n:'Ineffective risk-sharing across CCS project chain',f:5,s:4,t:2,sc:25},
+  {n:'Limited buyer demand',f:2,s:9,t:0,sc:24},
+  {n:'Lack of long-term legal certainty',f:2,s:3,t:1,sc:13},
+  {n:'Uncertainty about the future of the VCM',f:2,s:1,t:2,sc:10},
+  {n:'Lack of customer willingness to pay',f:1,s:0,t:2,sc:5},
+  {n:'Low social acceptance',f:0,s:2,t:0,sc:4},
+  {n:'Other',f:1,s:0,t:1,sc:4},
+  {n:'Perceived technology & performance risks',f:0,s:0,t:1,sc:1},
+  {n:'Permitting & licensing delays',f:0,s:0,t:1,sc:1}
+];
+
+var applications = [
+  {n:'Cement',f:22,s:8,t:8,sc:90},
+  {n:'Waste-to-energy',f:0,s:13,t:25,sc:51},
+  {n:'BECCS',f:10,s:6,t:2,sc:44},
+  {n:'Ammonia',f:3,s:1,t:0,sc:11},
+  {n:'Gas-fired power',f:2,s:1,t:1,sc:9},
+  {n:'Refineries & petrochemistry',f:0,s:4,t:0,sc:8},
+  {n:'Blue hydrogen',f:0,s:4,t:0,sc:8},
+  {n:'Pulp & paper',f:1,s:1,t:0,sc:5},
+  {n:'Iron & steel',f:0,s:1,t:2,sc:4},
+  {n:'DACCS',f:1,s:0,t:1,sc:4}
+];
+
+var policy = [
+  {n:'Emissions Trading System (ETS)',f:14,s:13,t:9,sc:77},
+  {n:'Carbon Contracts for Difference (CCfDs)',f:4,s:15,t:16,sc:58},
+  {n:'Reverse auctions',f:3,s:4,t:4,sc:21},
+  {n:'Carbon Border Adjustment (CBAM)',f:4,s:1,t:4,sc:18},
+  {n:'Production / investment tax credits',f:4,s:2,t:1,sc:17},
+  {n:'Regulated Asset Base (RAB) models',f:3,s:1,t:1,sc:12},
+  {n:'Carbon taxation',f:2,s:0,t:0,sc:6},
+  {n:'Other',f:1,s:0,t:1,sc:4},
+  {n:'Carbon Take-Back Obligations (CTBOs)',f:1,s:0,t:0,sc:3}
+];
+
+var cementBars = {
+  ets:{v:171,lo:101,hi:327},
+  bars:[
+    {label:'FOAK Coastal',v:167,lo:116,hi:252},
+    {label:'FOAK Coastal (50% aid)',v:145,lo:97,hi:226},
+    {label:'FOAK Inland',v:190,lo:137,hi:281},
+    {label:'FOAK Inland (50% aid)',v:169,lo:115,hi:258},
+    {label:'NOAK Coastal',v:124,lo:80,hi:227},
+    {label:'NOAK Coastal (50% aid)',v:111,lo:71,hi:208},
+    {label:'NOAK Inland',v:129,lo:76,hi:241},
+    {label:'NOAK Inland (50% aid)',v:116,lo:65,hi:230}
+  ]
+};
+
+var beccsBars = {
+  ets:{v:148,lo:84,hi:306},
+  bars:[
+    {label:'FOAK Coastal',v:220,lo:138,hi:395},
+    {label:'FOAK Coastal (50% aid)',v:187,lo:120,hi:331},
+    {label:'FOAK Inland',v:264,lo:163,hi:446},
+    {label:'FOAK Inland (50% aid)',v:232,lo:140,hi:400},
+    {label:'NOAK Coastal',v:186,lo:98,hi:382},
+    {label:'NOAK Coastal (50% aid)',v:165,lo:76,hi:293},
+    {label:'NOAK Inland',v:199,lo:88,hi:350},
+    {label:'NOAK Inland (50% aid)',v:177,lo:75,hi:320}
+  ]
+};
+
+var cementScatter = {panels:[
+  {title:'FOAK Coastal',pts:[['Exp 1',200,220],['Exp 7',185,200],['Exp 6',182,200],['Exp 8',150,175],['Exp 5',140,180],['DM',145,167],['Exp 4',140,160],['Exp 3',130,150],['Exp 2',120,150]]},
+  {title:'FOAK Inland',pts:[['Exp 7',235,260],['Exp 1',230,250],['Exp 6',207,225],['Exp 8',180,205],['Exp 5',160,200],['DM',169,190],['Exp 4',155,175],['Exp 2',150,180],['Exp 3',150,170]]},
+  {title:'NOAK Coastal',pts:[['Exp 6',182,200],['Exp 1',175,195],['Exp 8',138,150],['Exp 7',130,140],['Exp 5',110,140],['DM',111,124],['Exp 3',115,120],['Exp 2',95,110],['Exp 4',85,95]]},
+  {title:'NOAK Inland',pts:[['Exp 1',205,225],['Exp 6',182,200],['Exp 7',145,155],['Exp 8',142,155],['Exp 3',135,140],['Exp 5',110,140],['DM',116,129],['Exp 2',95,110],['Exp 4',85,95]]}
+]};
+
+var beccsScatter = {panels:[
+  {title:'FOAK Coastal',pts:[['Exp 4',240,380],['Exp 6',250,350],['Exp 1',250,300],['Exp 8',240,270],['DM',187,220],['Exp 7',175,200],['Exp 3',175,200],['Exp 5',150,175],['Exp 2',130,175]]},
+  {title:'FOAK Inland',pts:[['Exp 1',350,400],['Exp 6',300,400],['Exp 4',280,420],['Exp 8',270,300],['DM',232,264],['Exp 3',225,250],['Exp 7',205,230],['Exp 2',170,225],['Exp 5',180,205]]},
+  {title:'NOAK Coastal',pts:[['Exp 6',250,350],['Exp 4',180,300],['Exp 8',190,210],['Exp 3',175,200],['Exp 1',165,200],['DM',165,186],['Exp 5',140,155],['Exp 7',130,150],['Exp 2',85,115]]},
+  {title:'NOAK Inland',pts:[['Exp 6',290,390],['Exp 4',180,300],['Exp 3',195,220],['Exp 8',190,210],['DM',177,199],['Exp 1',165,200],['Exp 7',160,180],['Exp 5',145,160],['Exp 2',110,145]]}
+]};
+
+function renderDotMatrix(id, data) {
+  var el = document.getElementById(id);
+  var html = '';
+  var dotIndex = 0;
+  data.forEach(function(d) {
+    html += '<div class="dm-row"><div class="dm-label">' + d.n + '</div><div class="dm-dots">';
+    for (var i = 0; i < d.f; i++) {
+      html += '<div class="dm-dot rank1" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
+      dotIndex++;
+    }
+    for (var i = 0; i < d.s; i++) {
+      html += '<div class="dm-dot rank2" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
+      dotIndex++;
+    }
+    for (var i = 0; i < d.t; i++) {
+      html += '<div class="dm-dot rank3" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
+      dotIndex++;
+    }
+    html += '</div></div>';
+  });
+  html += '<div class="dm-legend">';
+  html += '<span><i style="background:#3a3a3a"></i> Ranked 1st</span>';
+  html += '<span><i style="background:#8a8a8a"></i> Ranked 2nd</span>';
+  html += '<span><i style="background:#c8c8c8"></i> Ranked 3rd</span>';
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function renderBarChart(id, data, color) {
+  var el = document.getElementById(id);
+  var maxVal = 500;
+  function scale(v) { return (v / maxVal) * 100; }
+  var html = '';
+  data.bars.forEach(function(b) {
+    var w = scale(b.v);
+    var ciL = scale(b.lo);
+    var ciR = scale(b.hi);
+    html += '<div class="bc-row">';
+    html += '<div class="bc-label">' + b.label + '</div>';
+    html += '<div class="bc-track">';
+    html += '<div class="bc-bar" style="background:' + color + '" data-w="' + w + '"></div>';
+    html += '<div class="bc-ci" style="left:' + ciL + '%;width:' + (ciR - ciL) + '%"></div>';
+    html += '<div class="bc-val">\u20ac' + b.v + '</div>';
+    html += '</div></div>';
+  });
+  var etsPos = scale(data.ets.v);
+  html += '<div style="position:relative;height:0;margin-left:228px">';
+  html += '<div class="bc-ets" style="left:' + etsPos + '%;top:-' + (data.bars.length * 44 + 8) + 'px;height:' + (data.bars.length * 44) + 'px">';
+  html += '<span class="bc-ets-label">\u20ac' + data.ets.v + ' ETS</span>';
+  html += '</div></div>';
+  html += '<div class="bc-note">Bars = weighted median FCC; whiskers = 90% credible interval; line = expected 15-yr EU ETS price</div>';
+  el.innerHTML = html;
+}
+
+function renderScatter(id, panels, darkColor, lightColor) {
+  var el = document.getElementById(id);
+  var W = 280, H = 260, pad = 40;
+  var html = '';
+  panels.forEach(function(p) {
+    var allVals = [];
+    p.pts.forEach(function(pt) { allVals.push(pt[1]); allVals.push(pt[2]); });
+    var mn = Math.floor(Math.min.apply(null, allVals) / 50) * 50;
+    var mx = Math.ceil(Math.max.apply(null, allVals) / 50) * 50;
+    function sx(v) { return pad + ((v - mn) / (mx - mn)) * (W - 2 * pad); }
+
+    html += '<div class="scatter-panel">';
+    html += '<h4>' + p.title + '</h4>';
+    html += '<svg viewBox="0 0 ' + W + ' ' + H + '">';
+    html += '<line x1="' + pad + '" y1="' + (H - 30) + '" x2="' + (W - pad) + '" y2="' + (H - 30) + '" stroke="#ddd" stroke-width="1"/>';
+    for (var v = mn; v <= mx; v += 50) {
+      var x = sx(v);
+      html += '<text x="' + x + '" y="' + (H - 14) + '" text-anchor="middle" fill="#999" font-size="11" font-family="EB Garamond,serif">' + v + '</text>';
+      html += '<line x1="' + x + '" y1="' + (H - 30) + '" x2="' + x + '" y2="' + (H - 33) + '" stroke="#ccc"/>';
+    }
+    p.pts.forEach(function(pt, i) {
+      var y = 20 + i * 24;
+      var isDM = pt[0] === 'DM';
+      var r = isDM ? 6 : 5;
+      var aidX = sx(pt[1]);
+      var baseX = sx(pt[2]);
+      html += '<line class="dot" x1="' + aidX + '" y1="' + y + '" x2="' + baseX + '" y2="' + y + '" stroke="' + lightColor + '" stroke-width="1" style="transition-delay:' + (i * 80) + 'ms"/>';
+      var ts = isDM ? 7 : 5;
+      html += '<polygon class="dot" points="' + aidX + ',' + (y - ts) + ' ' + (aidX - ts) + ',' + (y + ts) + ' ' + (aidX + ts) + ',' + (y + ts) + '" fill="' + (isDM ? darkColor : lightColor) + '" style="transition-delay:' + (i * 80 + 40) + 'ms"/>';
+      html += '<circle class="dot" cx="' + baseX + '" cy="' + y + '" r="' + r + '" fill="' + (isDM ? darkColor : lightColor) + '" style="transition-delay:' + (i * 80 + 60) + 'ms"/>';
+      html += '<text class="dot" x="' + (pad - 4) + '" y="' + (y + 4) + '" text-anchor="end" fill="' + (isDM ? darkColor : '#999') + '" font-size="' + (isDM ? '12' : '11') + '" font-weight="' + (isDM ? '600' : '400') + '" font-family="EB Garamond,serif" style="transition-delay:' + (i * 80) + 'ms">' + pt[0] + '</text>';
+    });
+    html += '<text x="' + (W / 2) + '" y="' + (H - 1) + '" text-anchor="middle" fill="#999" font-size="11" font-family="EB Garamond,serif">\u20ac/tCO\u2082</text>';
+    html += '</svg></div>';
+  });
+  html += '<div style="grid-column:1/-1;font-size:13px;color:#999;display:flex;gap:16px;align-items:center;margin-top:4px">';
+  html += '<span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12"><polygon points="6,1 1,11 11,11" fill="' + lightColor + '"/></svg> With 50% CAPEX aid</span>';
+  html += '<span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="' + lightColor + '"/></svg> Baseline FCC</span>';
+  html += '<span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="' + darkColor + '"/></svg> DM aggregate</span>';
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+renderDotMatrix('dm-barriers', barriers);
+renderDotMatrix('dm-applications', applications);
+renderDotMatrix('dm-policy', policy);
+renderBarChart('bc-cement', cementBars, '#4a7fb5');
+renderBarChart('bc-beccs', beccsBars, '#5a9a6a');
+renderScatter('sc-cement', cementScatter.panels, '#2b5e8c', '#8cb8d8');
+renderScatter('sc-beccs', beccsScatter.panels, '#3a7a4a', '#8cc89a');
+
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (!entry.isIntersecting) return;
+    var el = entry.target;
+    el.classList.add('visible');
+    el.querySelectorAll('.dm-dot').forEach(function(d) { d.classList.add('show'); });
+    el.querySelectorAll('.bc-bar').forEach(function(b) {
+      b.style.width = b.dataset.w + '%';
+      b.classList.add('show');
+    });
+    el.querySelectorAll('.scatter-panel').forEach(function(p) { p.classList.add('show'); });
+    el.querySelectorAll('[data-target]').forEach(function(c) { animateCounter(c); });
+    observer.unobserve(el);
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+
+var heroNum = document.querySelector('.big-number');
+if (heroNum) {
+  var heroObs = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      animateCounter(heroNum);
+      heroObs.unobserve(heroNum);
+    }
+  }, { threshold: 0.5 });
+  heroObs.observe(heroNum);
+}
+
+document.querySelectorAll('details').forEach(function(det) {
+  det.addEventListener('toggle', function() {
+    if (det.open) {
+      det.querySelectorAll('.scatter-panel').forEach(function(p) {
+        setTimeout(function() { p.classList.add('show'); }, 50);
+      });
+    }
+  });
+});
+
+function animateCounter(el) {
+  var target = parseFloat(el.dataset.target);
+  var suffix = el.dataset.suffix || '';
+  var prefix = el.dataset.prefix || '';
+  var duration = 1200;
+  var start = performance.now();
+  function tick(now) {
+    var t = Math.min((now - start) / duration, 1);
+    var ease = 1 - Math.pow(1 - t, 3);
+    var current = Math.round(target * ease);
+    el.textContent = prefix + current + suffix;
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+var bar = document.getElementById('progressBar');
+window.addEventListener('scroll', function() {
+  var h = document.documentElement.scrollHeight - window.innerHeight;
+  bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+}, { passive: true });
+</script>
 </body>
 </html>
