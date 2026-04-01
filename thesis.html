@@ -48,7 +48,7 @@
     .bc-ci::before,.bc-ci::after{content:"";position:absolute;top:-4px;width:2px;height:10px;background:rgba(0,0,0,.25)}
     .bc-ci::before{left:0}
     .bc-ci::after{right:0}
-    .bc-ets-mark{position:absolute;top:0;bottom:0;width:2px;background:var(--accent);z-index:2;transform:translateX(-1px)}
+    
     .bc-ets-label{font-size:12px;color:var(--accent);white-space:nowrap;transform:translateX(-50%);display:inline-block}
     .bc-note{font-size:13px;color:var(--muted);margin:4px 0 0 228px;font-style:italic}
     .scatter-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:28px 0 40px}
@@ -82,8 +82,7 @@
     <a class="back-link" href="index.html">&larr; Sebastian Hanss-Mirodone</a>
 
     <section class="hero">
-      <h1>From Policy to Projects</h1>
-      <p class="lead">Expert perspectives on the barriers and costs of European CCS deployment</p>
+      <h1>From Policy to Projects: Expert perspectives on the barriers and costs of European CCS deployment
       <p class="byline-text">Sebastian Hanss-Mirodone &ndash; Master&#x2019;s Thesis, March 2026<br>TUM Campus Straubing, Technical University of Munich</p>
     </section>
 
@@ -102,7 +101,7 @@
           <div class="lbl">Interviewed across the European CCS value chain</div>
         </div>
         <div class="stat">
-          <div class="num" data-target="16" data-suffix=" panelists">0</div>
+          <div class="num" data-target="16" data-suffix=" experts">0</div>
           <div class="lbl">Provided uncertainty-quantified cost estimates</div>
         </div>
       </div>
@@ -117,7 +116,7 @@
 
     <section class="finding reveal">
       <h2>The dominant barrier is a lack of durable policy commitment</h2>
-      <p>When asked to rank the most important barriers, the answer was clear: lack of long-term policy certainty scored nearly double the second-ranked barrier. CCS projects need 15&ndash;20-year lifespans to recover their investment, yet policy certainty rarely extends beyond a single legislative period.</p>
+      <p>When asked to rank the most important barriers, one barrier was prominent: lack of long-term policy certainty scored nearly double the second-ranked barrier. CCS projects need 15&ndash;20-year lifespans to recover their investment, yet policy certainty rarely extends beyond a single legislative period.</p>
       <div class="dot-matrix" id="dm-barriers"></div>
       <p>High upfront CAPEX and missing CO&#x2082; transport &amp; storage infrastructure rank second and third &ndash; forming a mutually reinforcing cycle: without infrastructure, costs stay high; without viable business cases, infrastructure investment stalls.</p>
     </section>
@@ -304,7 +303,7 @@ function renderBarChart(id, data, color) {
   var maxVal = 500;
   function scale(v) { return (v / maxVal) * 100; }
   var etsPos = scale(data.ets.v);
-  var html = '';
+  var html = '<div class="bc-bars-wrap" style="position:relative">';
   data.bars.forEach(function(b) {
     var w = scale(b.v);
     var ciL = scale(b.lo);
@@ -314,13 +313,25 @@ function renderBarChart(id, data, color) {
     html += '<div class="bc-track">';
     html += '<div class="bc-bar" style="background:' + color + '" data-w="' + w + '"></div>';
     html += '<div class="bc-ci" style="left:' + ciL + '%;width:' + (ciR - ciL) + '%"></div>';
-    html += '<div class="bc-ets-mark" style="left:' + etsPos + '%"></div>';
     html += '<div class="bc-val">€' + b.v + '</div>';
     html += '</div></div>';
   });
-  html += '<div style="position:relative;height:18px;padding-right:50px;margin-top:4px"><div style="margin-left:228px;position:relative"><span class="bc-ets-label" style="position:absolute;left:' + etsPos + '%;top:0">€' + data.ets.v + ' ETS</span></div></div>';
+  html += '</div>';
+  html += '<div style="position:relative;height:18px;padding-right:50px;margin-top:4px"><div style="margin-left:228px;position:relative"><span class="bc-ets-label" style="position:absolute;left:' + etsPos + '%;top:0">€' + data.ets.v + ' expected ETS</span></div></div>';
   html += '<div class="bc-note">Bars = weighted median FCC; whiskers = 90% credible interval; line = expected 15-yr EU ETS price</div>';
   el.innerHTML = html;
+  // After rendering, position a continuous ETS line using JS
+  var wrap = el.querySelector('.bc-bars-wrap');
+  var firstTrack = wrap.querySelector('.bc-track');
+  if (firstTrack) {
+    var line = document.createElement('div');
+    line.className = 'bc-ets-line';
+    var trackLeft = firstTrack.offsetLeft;
+    var trackWidth = firstTrack.offsetWidth;
+    var lineLeft = trackLeft + (etsPos / 100) * trackWidth;
+    line.style.cssText = 'position:absolute;top:0;bottom:0;left:' + lineLeft + 'px;width:2px;background:var(--accent);z-index:2;pointer-events:none';
+    wrap.appendChild(line);
+  }
 }
 
 function renderScatter(id, panels, darkColor, lightColor) {
