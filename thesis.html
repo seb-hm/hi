@@ -28,14 +28,17 @@
     .dot-matrix{margin:28px 0 40px}
     .dm-row{display:flex;align-items:center;margin:6px 0;gap:8px}
     .dm-label{min-width:300px;font-size:15px;text-align:right;color:var(--text);flex-shrink:0}
-    .dm-dots{display:flex;flex-wrap:wrap;gap:4px}
+    .dm-dots{display:flex;align-items:center;gap:0}
     .dm-dot{width:12px;height:12px;border-radius:50%;opacity:0;transform:scale(0);transition:opacity .4s ease,transform .4s ease}
     .dm-dot.show{opacity:1;transform:scale(1)}
+    .dm-rank-group{display:flex;gap:5px;margin-right:10px}
+    .dm-rank-group:last-child{margin-right:0}
     .dm-dot.rank1{background:#3a3a3a}
     .dm-dot.rank2{background:#8a8a8a}
     .dm-dot.rank3{background:#c8c8c8}
     .dm-legend{display:flex;gap:18px;margin:12px 0 0 308px;font-size:13px;color:var(--muted)}
     .dm-legend span{display:flex;align-items:center;gap:5px}
+    .dm-note{font-size:13px;color:var(--muted);margin:6px 0 0 308px;font-style:italic}
     .dm-legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
     .bar-chart{margin:28px 0 40px;position:relative}
     .bc-row{display:flex;align-items:center;margin:8px 0;gap:8px;padding-right:50px}
@@ -66,6 +69,7 @@
     @media(max-width:700px){
       .dm-label{min-width:160px;font-size:13px}
       .dm-legend{margin-left:168px}
+      .dm-note{margin-left:168px}
       .bc-label{min-width:140px;font-size:12px}
       .bc-note{margin-left:148px}
       .scatter-grid{grid-template-columns:1fr}
@@ -276,17 +280,29 @@ function renderDotMatrix(id, data) {
   var dotIndex = 0;
   data.forEach(function(d) {
     html += '<div class="dm-row"><div class="dm-label">' + d.n + '</div><div class="dm-dots">';
-    for (var i = 0; i < d.f; i++) {
-      html += '<div class="dm-dot rank1" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
-      dotIndex++;
+    if (d.f > 0) {
+      html += '<div class="dm-rank-group">';
+      for (var i = 0; i < d.f; i++) {
+        html += '<div class="dm-dot rank1" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
+        dotIndex++;
+      }
+      html += '</div>';
     }
-    for (var i = 0; i < d.s; i++) {
-      html += '<div class="dm-dot rank2" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
-      dotIndex++;
+    if (d.s > 0) {
+      html += '<div class="dm-rank-group">';
+      for (var i = 0; i < d.s; i++) {
+        html += '<div class="dm-dot rank2" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
+        dotIndex++;
+      }
+      html += '</div>';
     }
-    for (var i = 0; i < d.t; i++) {
-      html += '<div class="dm-dot rank3" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
-      dotIndex++;
+    if (d.t > 0) {
+      html += '<div class="dm-rank-group">';
+      for (var i = 0; i < d.t; i++) {
+        html += '<div class="dm-dot rank3" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
+        dotIndex++;
+      }
+      html += '</div>';
     }
     html += '</div></div>';
   });
@@ -295,6 +311,7 @@ function renderDotMatrix(id, data) {
   html += '<span><i style="background:#8a8a8a"></i> Ranked 2nd</span>';
   html += '<span><i style="background:#c8c8c8"></i> Ranked 3rd</span>';
   html += '</div>';
+  html += '<div class="dm-note">Each dot represents one expert vote</div>';
   el.innerHTML = html;
 }
 
