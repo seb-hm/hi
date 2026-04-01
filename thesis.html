@@ -59,7 +59,7 @@
     .scatter-panel .dot{opacity:0;transition:opacity .5s ease}
     .scatter-panel.show .dot{opacity:1}
     details{margin:20px 0;border:1px solid #e8e8e8;border-radius:6px;padding:12px 16px}
-    details summary{cursor:pointer;font-size:17px;color:var(--accent);font-weight:600;list-style:none}
+    details summary{cursor:pointer;font-size:17px;color:var(--accent);font-weight:600;list-style:none;font-family:'Source Sans 3',sans-serif}
     details summary::-webkit-details-marker{display:none}
     details summary::before{content:"+ ";font-weight:400}
     details[open] summary::before{content:"- "}
@@ -354,7 +354,7 @@ function renderScatter(id, panels, darkColor, lightColor) {
     html += '<line x1="' + pad + '" y1="' + (H - 30) + '" x2="' + (W - pad) + '" y2="' + (H - 30) + '" stroke="#ddd" stroke-width="1"/>';
     for (var v = mn; v <= mx; v += 50) {
       var x = sx(v);
-      html += '<text x="' + x + '" y="' + (H - 14) + '" text-anchor="middle" fill="#999" font-size="11" font-family="EB Garamond,serif">' + v + '</text>';
+      html += '<text x="' + x + '" y="' + (H - 14) + '" text-anchor="middle" fill="#999" font-size="11" font-family="Source Sans 3,sans-serif">' + v + '</text>';
       html += '<line x1="' + x + '" y1="' + (H - 30) + '" x2="' + x + '" y2="' + (H - 33) + '" stroke="#ccc"/>';
     }
     p.pts.forEach(function(pt, i) {
@@ -367,9 +367,9 @@ function renderScatter(id, panels, darkColor, lightColor) {
       var ts = isDM ? 7 : 5;
       html += '<polygon class="dot" points="' + aidX + ',' + (y - ts) + ' ' + (aidX - ts) + ',' + (y + ts) + ' ' + (aidX + ts) + ',' + (y + ts) + '" fill="' + (isDM ? darkColor : lightColor) + '" style="transition-delay:' + (i * 80 + 40) + 'ms"/>';
       html += '<circle class="dot" cx="' + baseX + '" cy="' + y + '" r="' + r + '" fill="' + (isDM ? darkColor : lightColor) + '" style="transition-delay:' + (i * 80 + 60) + 'ms"/>';
-      html += '<text class="dot" x="' + (pad - 4) + '" y="' + (y + 4) + '" text-anchor="end" fill="' + (isDM ? darkColor : '#999') + '" font-size="' + (isDM ? '12' : '11') + '" font-weight="' + (isDM ? '600' : '400') + '" font-family="EB Garamond,serif" style="transition-delay:' + (i * 80) + 'ms">' + pt[0] + '</text>';
+      html += '<text class="dot" x="' + (pad - 4) + '" y="' + (y + 4) + '" text-anchor="end" fill="' + (isDM ? darkColor : '#999') + '" font-size="' + (isDM ? '12' : '11') + '" font-weight="' + (isDM ? '600' : '400') + '" font-family="Source Sans 3,sans-serif" style="transition-delay:' + (i * 80) + 'ms">' + pt[0] + '</text>';
     });
-    html += '<text x="' + (W / 2) + '" y="' + (H - 1) + '" text-anchor="middle" fill="#999" font-size="11" font-family="EB Garamond,serif">\u20ac/tCO\u2082</text>';
+    html += '<text x="' + (W / 2) + '" y="' + (H - 1) + '" text-anchor="middle" fill="#999" font-size="11" font-family="Source Sans 3,sans-serif">\u20ac/tCO\u2082</text>';
     html += '</svg></div>';
   });
   html += '<div style="grid-column:1/-1;font-size:13px;color:#999;display:flex;gap:16px;align-items:center;margin-top:4px">';
