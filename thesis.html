@@ -28,10 +28,10 @@
     .dot-matrix{margin:28px 0 40px}
     .dm-row{display:flex;align-items:center;margin:6px 0;gap:8px}
     .dm-label{min-width:300px;font-size:15px;text-align:right;color:var(--text);flex-shrink:0}
-    .dm-dots{display:flex;align-items:center;gap:0}
+    .dm-dots{display:flex;align-items:center;gap:14px}
     .dm-dot{width:12px;height:12px;border-radius:50%;opacity:0;transform:scale(0);transition:opacity .4s ease,transform .4s ease}
     .dm-dot.show{opacity:1;transform:scale(1)}
-    .dm-rank-group{display:flex;gap:5px;margin-right:10px}
+    .dm-rank-group{display:flex;gap:2px;flex-shrink:0}
     .dm-rank-group:last-child{margin-right:0}
     .dm-dot.rank1{background:#3a3a3a}
     .dm-dot.rank2{background:#8a8a8a}
@@ -86,8 +86,8 @@
     <a class="back-link" href="index.html">&larr; Sebastian Hanss-Mirodone</a>
 
     <section class="hero">
-      <h1>From Policy to Projects: Expert perspectives on the barriers and costs of European CCS deployment
-      <p class="byline-text">Sebastian Hanss-Mirodone &ndash; Master&#x2019;s Thesis, March 2026<br>TUM Campus Straubing, Technical University of Munich</p>
+      <h1>From Policy to Projects: Expert perspectives on the barriers and costs of European CCS deployment</h1>
+      <p class="byline-text" style="margin-top:24px">Sebastian Hanss-Mirodone &ndash; Master&#x2019;s Thesis, March 2026<br>TUM Campus Straubing, Technical University of Munich</p>
     </section>
 
     <section class="finding reveal">
@@ -276,34 +276,38 @@ var beccsScatter = {panels:[
 
 function renderDotMatrix(id, data) {
   var el = document.getElementById(id);
+  var maxF = 0, maxS = 0, maxT = 0;
+  data.forEach(function(d) {
+    if (d.f > maxF) maxF = d.f;
+    if (d.s > maxS) maxS = d.s;
+    if (d.t > maxT) maxT = d.t;
+  });
+  var dotSize = 12, dotGap = 2;
+  var wF = maxF * dotSize + (maxF - 1) * dotGap;
+  var wS = maxS * dotSize + (maxS - 1) * dotGap;
+  var wT = maxT * dotSize + (maxT - 1) * dotGap;
   var html = '';
   var dotIndex = 0;
   data.forEach(function(d) {
     html += '<div class="dm-row"><div class="dm-label">' + d.n + '</div><div class="dm-dots">';
-    if (d.f > 0) {
-      html += '<div class="dm-rank-group">';
-      for (var i = 0; i < d.f; i++) {
-        html += '<div class="dm-dot rank1" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
-        dotIndex++;
-      }
-      html += '</div>';
+    html += '<div class="dm-rank-group" style="width:' + wF + 'px">';
+    for (var i = 0; i < d.f; i++) {
+      html += '<div class="dm-dot rank1" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
+      dotIndex++;
     }
-    if (d.s > 0) {
-      html += '<div class="dm-rank-group">';
-      for (var i = 0; i < d.s; i++) {
-        html += '<div class="dm-dot rank2" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
-        dotIndex++;
-      }
-      html += '</div>';
+    html += '</div>';
+    html += '<div class="dm-rank-group" style="width:' + wS + 'px">';
+    for (var i = 0; i < d.s; i++) {
+      html += '<div class="dm-dot rank2" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
+      dotIndex++;
     }
-    if (d.t > 0) {
-      html += '<div class="dm-rank-group">';
-      for (var i = 0; i < d.t; i++) {
-        html += '<div class="dm-dot rank3" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
-        dotIndex++;
-      }
-      html += '</div>';
+    html += '</div>';
+    html += '<div class="dm-rank-group" style="width:' + wT + 'px">';
+    for (var i = 0; i < d.t; i++) {
+      html += '<div class="dm-dot rank3" style="transition-delay:' + (dotIndex * 25) + 'ms"></div>';
+      dotIndex++;
     }
+    html += '</div>';
     html += '</div></div>';
   });
   html += '<div class="dm-legend">';
