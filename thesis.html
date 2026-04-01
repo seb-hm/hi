@@ -48,8 +48,8 @@
     .bc-ci::before,.bc-ci::after{content:"";position:absolute;top:-4px;width:2px;height:10px;background:rgba(0,0,0,.25)}
     .bc-ci::before{left:0}
     .bc-ci::after{right:0}
-    .bc-ets{position:absolute;top:-8px;bottom:-8px;width:2px;background:var(--accent);z-index:2}
-    .bc-ets-label{position:absolute;top:-22px;font-size:12px;color:var(--accent);white-space:nowrap;transform:translateX(-50%)}
+    .bc-ets-mark{position:absolute;top:0;bottom:0;width:2px;background:var(--accent);z-index:2;transform:translateX(-1px)}
+    .bc-ets-label{font-size:12px;color:var(--accent);white-space:nowrap;transform:translateX(-50%);display:inline-block}
     .bc-note{font-size:13px;color:var(--muted);margin:4px 0 0 228px;font-style:italic}
     .scatter-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:28px 0 40px}
     .scatter-panel{position:relative}
@@ -303,6 +303,7 @@ function renderBarChart(id, data, color) {
   var el = document.getElementById(id);
   var maxVal = 500;
   function scale(v) { return (v / maxVal) * 100; }
+  var etsPos = scale(data.ets.v);
   var html = '';
   data.bars.forEach(function(b) {
     var w = scale(b.v);
@@ -313,14 +314,11 @@ function renderBarChart(id, data, color) {
     html += '<div class="bc-track">';
     html += '<div class="bc-bar" style="background:' + color + '" data-w="' + w + '"></div>';
     html += '<div class="bc-ci" style="left:' + ciL + '%;width:' + (ciR - ciL) + '%"></div>';
-    html += '<div class="bc-val">\u20ac' + b.v + '</div>';
+    html += '<div class="bc-ets-mark" style="left:' + etsPos + '%"></div>';
+    html += '<div class="bc-val">€' + b.v + '</div>';
     html += '</div></div>';
   });
-  var etsPos = scale(data.ets.v);
-  html += '<div style="position:relative;height:0;margin-left:228px">';
-  html += '<div class="bc-ets" style="left:' + etsPos + '%;top:-' + (data.bars.length * 44 + 8) + 'px;height:' + (data.bars.length * 44) + 'px">';
-  html += '<span class="bc-ets-label">\u20ac' + data.ets.v + ' ETS</span>';
-  html += '</div></div>';
+  html += '<div style="position:relative;height:18px;padding-right:50px;margin-top:4px"><div style="margin-left:228px;position:relative"><span class="bc-ets-label" style="position:absolute;left:' + etsPos + '%;top:0">€' + data.ets.v + ' ETS</span></div></div>';
   html += '<div class="bc-note">Bars = weighted median FCC; whiskers = 90% credible interval; line = expected 15-yr EU ETS price</div>';
   el.innerHTML = html;
 }
