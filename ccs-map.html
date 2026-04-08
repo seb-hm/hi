@@ -115,8 +115,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 
 <header>
   <div class="logo">
-    <div class="logo-mark">F2E</div>
-    <h1>European CCS Projects<span class="sub">Factor2 Energy</span></h1>
+    <h1>European CCS Projects</h1>
   </div>
   <div class="stats">
     <div><strong id="sTotal">—</strong> projects</div>
@@ -172,28 +171,6 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
           <button class="pill" data-v="Transport Hub"><span class="dot" style="background:#f97316"></span>Transport</button>
           <button class="pill" data-v="Direct Air Capture"><span class="dot" style="background:#22c55e"></span>DAC</button>
           <button class="pill" data-v="Waste-to-Energy"><span class="dot" style="background:#8b5cf6"></span>WtE</button>
-        </div>
-      </div>
-
-      <div class="filter-row">
-        <span class="filter-label">Contact</span>
-        <div class="filters" id="fContact">
-          <button class="pill active" data-v="all">All</button>
-          <button class="pill" data-v="Established Relationship">Established</button>
-          <button class="pill" data-v="In Dialogue">In Dialogue</button>
-          <button class="pill" data-v="Reached Out">Reached Out</button>
-          <button class="pill" data-v="No Contact">No Contact</button>
-        </div>
-      </div>
-
-      <div class="filter-row">
-        <span class="filter-label">Priority</span>
-        <div class="filters" id="fPriority">
-          <button class="pill active" data-v="all">All</button>
-          <button class="pill" data-v="High">High</button>
-          <button class="pill" data-v="Medium">Medium</button>
-          <button class="pill" data-v="Low">Low</button>
-          <button class="pill" data-v="Watch List">Watch</button>
         </div>
       </div>
 
@@ -265,7 +242,7 @@ function makeIcon(p){
 // ── State ──
 let allProjects=[];
 let markers={};
-let filters={status:new Set(),sector:new Set(),subsector:new Set(),contact:new Set(),priority:new Set(),storageType:new Set(),location:new Set()};
+let filters={status:new Set(),sector:new Set(),subsector:new Set(),storageType:new Set(),location:new Set()};
 let searchQ='';
 
 // ── Data (loaded from CSV) ──
@@ -334,8 +311,6 @@ function getFiltered(){
     if(filters.status.size>0 && !filters.status.has(p['Status'])) return false;
     if(filters.sector.size>0 && !filters.sector.has(p['Sector Classification'])) return false;
     if(filters.subsector.size>0 && !filters.subsector.has(p['Subsector Classification'])) return false;
-    if(filters.contact.size>0 && !filters.contact.has(p['contact_status']||'')) return false;
-    if(filters.priority.size>0 && !filters.priority.has(p['internal_priority']||'')) return false;
     if(filters.storageType.size>0 && !filters.storageType.has((p['Storage Classification']||'').trim())) return false;
     if(filters.location.size>0 && !filters.location.has((p['Onshore/Offshore']||'Unknown').trim())) return false;
     if(searchQ){
@@ -395,7 +370,6 @@ function render(){
           ${p.capture_lead_company?`<tr><td>Capture Lead</td><td>${p.capture_lead_company}</td></tr>`:''}
           ${p.storage_lead_company?`<tr><td>Storage Lead</td><td>${p.storage_lead_company}</td></tr>`:''}
           ${p.funding_source?`<tr><td>Funding</td><td>${p.funding_source} ${p.funding_amount_eur_m?'€'+p.funding_amount_eur_m+'M':''}</td></tr>`:''}
-          ${p.contact_status?`<tr><td>Contact</td><td>${p.contact_status}</td></tr>`:''}
         </table>
         <div class="links">${webLink}${spLink}${refLinks}</div>
       </div>
@@ -438,8 +412,8 @@ function highlightCard(id){
 }
 
 // ── Filter handlers ──
-['fStatus','fSector','fSubsector','fContact','fPriority','fStorageType','fLocation'].forEach(gid=>{
-  const keyMap={fStatus:'status',fSector:'sector',fSubsector:'subsector',fContact:'contact',fPriority:'priority',fStorageType:'storageType',fLocation:'location'};
+['fStatus','fSector','fSubsector','fStorageType','fLocation'].forEach(gid=>{
+  const keyMap={fStatus:'status',fSector:'sector',fSubsector:'subsector',fStorageType:'storageType',fLocation:'location'};
   document.getElementById(gid).addEventListener('click',e=>{
     if(!e.target.classList.contains('pill')&&!e.target.closest('.pill')) return;
     const btn=e.target.classList.contains('pill')?e.target:e.target.closest('.pill');
