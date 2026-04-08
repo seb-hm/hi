@@ -25,7 +25,7 @@ html, body {
 }
 
 .title {
-  font-size: 56px;
+  font-size: 52px;
   margin: 12px 0 8px;
   letter-spacing: 0.5px;
   font-family: 'DM Sans', sans-serif;
@@ -33,7 +33,7 @@ html, body {
 
 .subtitle {
   margin: 8px 0 24px;
-  font-size: 20px;
+  font-size: 19px;
   color: var(--muted);
 }
 

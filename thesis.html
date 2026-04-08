@@ -26,7 +26,7 @@
     .stat .num{font-size:56px;font-weight:600;color:var(--accent);line-height:1;font-family:'DM Sans',sans-serif}
     .stat .lbl{font-size:16px;color:var(--muted);margin-top:4px}
     .dot-matrix{margin:28px 0 40px}
-    .dm-row{display:flex;align-items:flex-start;margin:12px 0;gap:8px}
+    .dm-row{display:flex;align-items:center;margin:12px 0;gap:8px}
     .dm-label{width:340px;min-width:340px;font-size:15px;text-align:right;color:var(--text);flex-shrink:0;padding-top:1px}
     .dm-dots{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
     .dm-dot{width:12px;height:12px;border-radius:50%;opacity:0;transform:scale(0);transition:opacity .4s ease,transform .4s ease}
@@ -344,7 +344,7 @@ function renderScatter(id, panels, darkColor, lightColor) {
   panels.forEach(function(p) {
     var allVals = [];
     p.pts.forEach(function(pt) { allVals.push(pt[1]); allVals.push(pt[2]); });
-    var mn = Math.floor(Math.min.apply(null, allVals) / 50) * 50;
+    var mn = Math.floor((Math.min.apply(null, allVals) - 1) / 50) * 50;
     var mx = Math.ceil(Math.max.apply(null, allVals) / 50) * 50;
     function sx(v) { return pad + ((v - mn) / (mx - mn)) * (W - 2 * pad); }
 
