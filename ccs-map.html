@@ -352,7 +352,7 @@ function render(){
     const refs=(p.Reference||'').toString();
     const refLinks=refs.split(/[\s,;]+/).filter(u=>u.startsWith('http')).map(u=>`<a href="${u}" target="_blank">Source ↗</a>`).join('');
     const webLink=p.project_website?`<a href="${p.project_website}" target="_blank">Website ↗</a>`:'';
-    const spLink=p.sharepoint_folder?`<a href="${p.sharepoint_folder}" target="_blank">Documents ↗</a>`:'';
+
 
     m.bindPopup(`
       <div class="pop">
@@ -371,7 +371,7 @@ function render(){
           ${p.storage_lead_company?`<tr><td>Storage Lead</td><td>${p.storage_lead_company}</td></tr>`:''}
           ${p.funding_source?`<tr><td>Funding</td><td>${p.funding_source} ${p.funding_amount_eur_m?'€'+p.funding_amount_eur_m+'M':''}</td></tr>`:''}
         </table>
-        <div class="links">${webLink}${spLink}${refLinks}</div>
+        <div class="links">${webLink}${refLinks}</div>
       </div>
     `,{maxWidth:380});
 
