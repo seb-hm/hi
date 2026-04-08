@@ -65,16 +65,19 @@
     details[open] summary::before{content:"- "}
     .closing-quote{border-left:3px solid var(--accent);padding:12px 24px;margin:40px 0;font-size:22px;font-style:italic;color:var(--muted);line-height:1.5}
     @media(max-width:700px){
-      .dm-label{width:180px;min-width:180px;font-size:13px}
-      .dm-legend{margin-left:188px}
-      .dm-note{margin-left:188px}
-      .bc-label{min-width:140px;font-size:12px}
-      .bc-note{margin-left:148px}
+      .dm-row{flex-direction:column;align-items:flex-start;gap:4px}
+      .dm-label{width:auto;min-width:auto;text-align:left}
+      .dm-legend{margin-left:0;flex-wrap:wrap}
+      .dm-note{margin-left:0}
+      .bc-label{min-width:100px;font-size:11px}
+      .bc-note{margin-left:0;font-size:11px}
       .scatter-grid{grid-template-columns:1fr}
       .hero h1{font-size:36px}
       .big-number{font-size:52px}
       .stat .num{font-size:40px}
-      .stat-row{gap:24px}
+      .stat-row{gap:24px;flex-wrap:wrap}
+      .finding h2{font-size:26px}
+      .finding p{font-size:16px}
     }
   </style>
 </head>
@@ -85,7 +88,7 @@
 
     <section class="hero">
       <h1>From Policy to Projects: Expert perspectives on the barriers and costs of European CCS deployment</h1>
-      <p class="byline-text" style="margin-top:24px">Sebastian Hanss-Mirodone &ndash; Master&#x2019;s Thesis Summary, March 2026<br>TUM Campus Straubing, Technical University of Munich</p>
+      <p class="byline-text" style="margin-top:24px">Sebastian Hanss-Mirodone &ndash; Master&#x2019;s Thesis Summary, March 2026<br>Technical University of Munich</p>
       <svg viewBox="0 0 712 40" fill="none" style="width:100%;height:40px;margin:20px 0 0;display:block">
         <path d="M0 28 C60 28, 90 6, 160 10 S260 38, 360 20 S460 2, 540 18 S650 36, 712 14" stroke="#373DB1" stroke-width="1.5" fill="none" stroke-linecap="round"/>
       </svg>
@@ -341,7 +344,7 @@ function renderBarChart(id, data, color, etsLabel) {
 
 function renderScatter(id, panels, darkColor, lightColor) {
   var el = document.getElementById(id);
-  var W = 280, H = 260, pad = 40;
+  var W = 280, H = 290, pad = 40;
   var html = '';
   panels.forEach(function(p) {
     var allVals = [];
@@ -356,7 +359,7 @@ function renderScatter(id, panels, darkColor, lightColor) {
     html += '<line x1="' + pad + '" y1="' + (H - 30) + '" x2="' + (W - pad) + '" y2="' + (H - 30) + '" stroke="#ddd" stroke-width="1"/>';
     for (var v = mn; v <= mx; v += 50) {
       var x = sx(v);
-      html += '<text x="' + x + '" y="' + (H - 14) + '" text-anchor="middle" fill="#999" font-size="11" font-family="Source Sans 3,sans-serif">' + v + '</text>';
+      html += '<text x="' + x + '" y="' + (H - 18) + '" text-anchor="middle" fill="#999" font-size="11" font-family="Source Sans 3,sans-serif">' + v + '</text>';
       html += '<line x1="' + x + '" y1="' + (H - 30) + '" x2="' + x + '" y2="' + (H - 33) + '" stroke="#ccc"/>';
     }
     p.pts.forEach(function(pt, i) {
@@ -371,7 +374,7 @@ function renderScatter(id, panels, darkColor, lightColor) {
       html += '<circle class="dot" cx="' + baseX + '" cy="' + y + '" r="' + r + '" fill="' + (isDM ? darkColor : lightColor) + '" style="transition-delay:' + (i * 80 + 60) + 'ms"/>';
       html += '<text class="dot" x="' + (pad - 4) + '" y="' + (y + 4) + '" text-anchor="end" fill="' + (isDM ? darkColor : '#999') + '" font-size="' + (isDM ? '12' : '11') + '" font-weight="' + (isDM ? '600' : '400') + '" font-family="Source Sans 3,sans-serif" style="transition-delay:' + (i * 80) + 'ms">' + pt[0] + '</text>';
     });
-    html += '<text x="' + (W / 2) + '" y="' + (H - 1) + '" text-anchor="middle" fill="#999" font-size="11" font-family="Source Sans 3,sans-serif">\u20ac/tCO\u2082</text>';
+    html += '<text x="' + (W / 2) + '" y="' + (H - 5) + '" text-anchor="middle" fill="#999" font-size="11" font-family="Source Sans 3,sans-serif">\u20ac/tCO<tspan font-size="9" baseline-shift="-30%">2</tspan></text>';
     html += '</svg></div>';
   });
   html += '<div style="grid-column:1/-1;font-size:13px;color:#999;display:flex;gap:16px;align-items:center;margin-top:4px">';
