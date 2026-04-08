@@ -2,7 +2,7 @@
   --bg: #ffffff;
   --text: #1a1a1a;
   --muted: #6b6b6b;
-  --accent: #b07d2e;
+  --accent: #373DB1;
 }
 
 * {
@@ -46,12 +46,12 @@ html, body {
 a {
   color: var(--accent);
   text-decoration: none;
-  border-bottom: 1px solid rgba(176, 125, 46, 0.35);
+  border-bottom: 1px solid rgba(55, 61, 177, 0.35);
 }
 
 a:hover {
-  color: #8a6020;
-  border-bottom-color: rgba(138, 96, 32, 0.6);
+  color: #0B1A43;
+  border-bottom-color: rgba(55, 61, 177, 0.6);
 }
 
 .about p {
@@ -60,30 +60,30 @@ a:hover {
 }
 
 .projects h2 {
-  font-size: 44px;
+  font-size: 24px;
   margin: 46px 0 10px;
   font-family: 'DM Sans', sans-serif;
 }
 
 .post {
-  margin: 26px 0 26px;
+  margin: 22px 0 22px;
 }
 
 .post-title {
   display: inline-block;
-  font-size: 28px;
+  font-size: 22px;
   color: var(--accent);
   text-decoration: none;
-  border-bottom: 2px solid rgba(176, 125, 46, 0.45);
+  border-bottom: 2px solid rgba(55, 61, 177, 0.45);
   font-family: 'DM Sans', sans-serif;
 }
 
 .post-dek {
-  margin: 6px 0 0;
+  margin: 4px 0 0;
   font-family: 'Source Sans 3', sans-serif;
   font-style: italic;
   color: var(--muted);
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .post-date {
