@@ -78,6 +78,7 @@
       .stat-row{gap:24px;flex-wrap:wrap}
       .finding h2{font-size:26px}
       .finding p{font-size:16px}
+      .scatter-legend{flex-direction:column;align-items:flex-start!important}
     }
   </style>
 </head>
@@ -344,7 +345,7 @@ function renderBarChart(id, data, color, etsLabel) {
 
 function renderScatter(id, panels, darkColor, lightColor) {
   var el = document.getElementById(id);
-  var W = 280, H = 290, pad = 40;
+  var W = 280, H = 270, pad = 40;
   var html = '';
   panels.forEach(function(p) {
     var allVals = [];
@@ -377,7 +378,7 @@ function renderScatter(id, panels, darkColor, lightColor) {
     html += '<text x="' + (W / 2) + '" y="' + (H - 5) + '" text-anchor="middle" fill="#999" font-size="11" font-family="Source Sans 3,sans-serif">\u20ac/tCO<tspan font-size="9" baseline-shift="-30%">2</tspan></text>';
     html += '</svg></div>';
   });
-  html += '<div style="grid-column:1/-1;font-size:13px;color:#999;display:flex;gap:16px;align-items:center;margin-top:4px">';
+  html += '<div class="scatter-legend" style="grid-column:1/-1;font-size:13px;color:#999;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-top:4px">';
   html += '<span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12"><polygon points="6,1 1,11 11,11" fill="' + lightColor + '"/></svg> With 50% CAPEX aid</span>';
   html += '<span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="' + lightColor + '"/></svg> Baseline FCC</span>';
   html += '<span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="' + darkColor + '"/></svg> DM aggregate</span>';
