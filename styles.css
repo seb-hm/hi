@@ -215,6 +215,10 @@ figcaption {
   .about p {
     font-size: 16px;
   }
+
+  .wave-line {
+    stroke-width: 3;
+  }
 }
 
 
