@@ -109,6 +109,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
   .main{flex-direction:column-reverse}
   .sidebar{width:100%;height:auto;max-height:45vh;border-left:none;border-top:none;border-bottom:6px solid #999;overflow-y:auto}
   .project-list{display:none}
+  .project-list.search-active{display:block;max-height:30vh;border-top:1px solid var(--border)}
   .sidebar-section:last-of-type{padding-bottom:6px;border-bottom:none}
 }
 </style>
@@ -442,14 +443,14 @@ function highlightCard(id){
 document.getElementById('searchInput').addEventListener('input',e=>{
   searchQ=e.target.value;
   document.getElementById('searchClear').style.display=searchQ?'block':'none';
-  document.getElementById('projectList').style.display=searchQ?'block':'';
+  document.getElementById('projectList').classList.toggle('search-active',!!searchQ);
   render();
 });
 document.getElementById('searchClear').addEventListener('click',()=>{
   const inp=document.getElementById('searchInput');
   inp.value='';searchQ='';
   document.getElementById('searchClear').style.display='none';
-  document.getElementById('projectList').style.display='';
+  document.getElementById('projectList').classList.remove('search-active');
   document.querySelectorAll('.card.active').forEach(c=>c.classList.remove('active'));
   map.closePopup();
   render();
