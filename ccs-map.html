@@ -107,8 +107,9 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 
 @media(max-width:960px){
   .main{flex-direction:column-reverse}
-  .sidebar{width:100%;height:auto;max-height:45vh;border-left:none;border-top:none;border-bottom:2px solid var(--border);overflow-y:auto;box-shadow:0 2px 6px rgba(0,0,0,0.08)}
-  .project-list{max-height:20vh}
+  .sidebar{width:100%;height:auto;max-height:45vh;border-left:none;border-top:none;border-bottom:6px solid #999;overflow-y:auto}
+  .project-list{display:none}
+  .sidebar-section:last-of-type{padding-bottom:6px;border-bottom:none}
 }
 </style>
 </head>
@@ -135,8 +136,6 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
     </div>
 
     <div class="sidebar-section" id="filterSection">
-      <h2>Filters</h2>
-
       <div class="filter-row">
         <span class="filter-label">Status</span>
         <div class="filters" id="fStatus">
